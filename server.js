@@ -12,10 +12,27 @@ const PORT = process.env.PORT || 3000;
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_API_KEY);
 
 // Middleware
-app.use(cors());
+const corsOptions = {
+    origin: 'https://amplify-ai-demo.netlify.app', // Your Netlify frontend URL
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
+    optionsSuccessStatus: 204
+};
+
+app.use(cors(corsOptions));
+
+// ✅ Explicitly handle CORS preflight requests
+app.options('*', cors(corsOptions));
+
+
 app.use(bodyParser.json());
 const path = require('path');
 app.use(express.static(path.join(__dirname)));
+// app.use(cors());
+// app.use(bodyParser.json());
+// const path = require('path');
+// app.use(express.static(path.join(__dirname)));
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
